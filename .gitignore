@@ -5,3 +5,4 @@ sqlite/
 Dockerfile
 docker-compose.yml
 grafana-plugins/
+grafana-data/
