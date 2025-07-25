@@ -29,7 +29,7 @@ func WriteLogRecordsToDB(db *sql.DB, records []LogRecord) error {
 
 	// Now to actually write the records to the database
 	for _, rec := range records {
-		attrsJSON, _ := json.Marshal(rec.Attributes)
+		attrsJSON, _ := json.Marshal(rec.Attributes) // Needs an update to handle different types of attribute
 
 		_, err := stmt.Exec(
 			rec.TimeUnixNano,

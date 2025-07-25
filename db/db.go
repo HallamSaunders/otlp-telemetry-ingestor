@@ -7,7 +7,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func InitializeDatabase(path string) *sql.DB {
+func InitializeLogsDatabase(path string) *sql.DB {
 	// First, attempt to open the database at the specified path
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
@@ -30,6 +30,35 @@ func InitializeDatabase(path string) *sql.DB {
 	);`
 
 	if _, err := db.Exec(createLogsTable); err != nil {
+		log.Fatalf("Failed to create logs table: %v", err)
+	}
+
+	return db
+}
+
+func InitializeTracesDatabase(path string) *sql.DB {
+	// First, attempt to open the database at the specified path
+	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		log.Fatalf("Failed to open database: %v", err)
+	}
+
+	// === Create the traces table based on Traces type defined if it doesn't exist ===
+	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
+	createTracesTable := `
+	CREATE TABLE IF NOT EXISTS traces (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		start_time_unix_nano TEXT NOT NULL,
+		end_time_unix_nano TEXT NOT NULL,
+		name TEXT NOT NULL,
+		span_id TEXT NOT NULL,
+		trace_id TEXT NOT NULL,
+		parent_span_id TEXT,
+		attributes TEXT,
+		dropped_attributes_count INTEGER DEFAULT 0
+	);`
+
+	if _, err := db.Exec(createTracesTable); err != nil {
 		log.Fatalf("Failed to create logs table: %v", err)
 	}
 
