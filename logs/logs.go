@@ -18,7 +18,7 @@ type LogRecord struct {
 	SeverityText           string      `json:"severityText"`
 	Body                   ValueField  `json:"body"`
 	Attributes             []Attribute `json:"attributes"`
-	DroppedAttributesCount int         `json:"droppedAttributesCount,omitempty"`
+	DroppedAttributesCount int         `json:"droppedAttributesCount,omitempty"` // This doesn't parse the values from OTLP correctly, instead showing a conversion error or a very large number
 	TraceID                string      `json:"traceId,omitempty"`
 	SpanID                 string      `json:"spanId,omitempty"`
 }
@@ -29,5 +29,6 @@ type Attribute struct {
 }
 
 type ValueField struct {
+	// Assume just strings for now
 	StringValue string `json:"stringValue,omitempty"`
 }
