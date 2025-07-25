@@ -29,6 +29,5 @@ type Attribute struct {
 }
 
 type ValueField struct {
-	// Values of a log could possibly be of various types but for simplicity, let's assume strings for now
 	StringValue string `json:"stringValue,omitempty"`
 }
