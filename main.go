@@ -28,7 +28,7 @@ func logsSetup() {
 	log.Print("Parsed Log Records: ", logRecords)
 
 	// Setup logs database
-	dbLogs := db.InitializeLogsDatabase("logs.db")
+	dbLogs := db.InitializeLogsDatabase("sqlite/logs.db")
 	defer dbLogs.Close()
 
 	// Write log records to database
@@ -47,7 +47,7 @@ func tracesSetup() {
 	log.Print("Parsed Trace Records: ", traceRecords)
 
 	// Setup logs database
-	dbTraces := db.InitializeTracesDatabase("traces.db")
+	dbTraces := db.InitializeTracesDatabase("sqlite/traces.db")
 	defer dbTraces.Close()
 
 	// Write log records to database
@@ -66,7 +66,7 @@ func metricsSetup() {
 	log.Print("Parsed Metrics Records: ", metricsRecords)
 
 	// Setup metrics database
-	dbMetrics := db.InitializeMetricsDatabase("metrics.db")
+	dbMetrics := db.InitializeMetricsDatabase("sqlite/metrics.db")
 	defer dbMetrics.Close()
 
 	// Write metrics records to database

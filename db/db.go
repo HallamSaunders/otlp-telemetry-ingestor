@@ -3,16 +3,28 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "modernc.org/sqlite"
 )
 
-func InitializeLogsDatabase(path string) *sql.DB {
-	// First, attempt to open the database at the specified path
+func OverwriteCurrentDBFile(path string) *sql.DB {
+	// Remove the file if it exists
+	if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
+		log.Fatalf("Failed to remove existing database file: %v", err)
+	}
+
+	// Create a new database file
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
 		log.Fatalf("Failed to open database: %v", err)
 	}
+
+	return db
+}
+
+func InitializeLogsDatabase(path string) *sql.DB {
+	db := OverwriteCurrentDBFile(path)
 
 	// === Create the logs table based on Logs type defined if it doesn't exist ===
 	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
@@ -37,10 +49,7 @@ func InitializeLogsDatabase(path string) *sql.DB {
 }
 
 func InitializeTracesDatabase(path string) *sql.DB {
-	db, err := sql.Open("sqlite", path)
-	if err != nil {
-		log.Fatalf("Failed to open database: %v", err)
-	}
+	db := OverwriteCurrentDBFile(path)
 
 	// === Create the traces table based on Traces type defined if it doesn't exist ===
 	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
@@ -65,10 +74,7 @@ func InitializeTracesDatabase(path string) *sql.DB {
 }
 
 func InitializeMetricsDatabase(path string) *sql.DB {
-	db, err := sql.Open("sqlite", path)
-	if err != nil {
-		log.Fatalf("Failed to open database: %v", err)
-	}
+	db := OverwriteCurrentDBFile(path)
 
 	// === Create the metrics table based on Metrics type defined if it doesn't exist ===
 	createMetricsTable := `

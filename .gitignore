@@ -1,3 +1,7 @@
 logs.db
 traces.db
 metrics.db
+sqlite/
+Dockerfile
+docker-compose.yml
+grafana-plugins/
