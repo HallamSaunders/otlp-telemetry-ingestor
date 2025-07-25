@@ -37,7 +37,6 @@ func InitializeLogsDatabase(path string) *sql.DB {
 }
 
 func InitializeTracesDatabase(path string) *sql.DB {
-	// First, attempt to open the database at the specified path
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
 		log.Fatalf("Failed to open database: %v", err)
@@ -60,6 +59,35 @@ func InitializeTracesDatabase(path string) *sql.DB {
 
 	if _, err := db.Exec(createTracesTable); err != nil {
 		log.Fatalf("Failed to create logs table: %v", err)
+	}
+
+	return db
+}
+
+func InitializeMetricsDatabase(path string) *sql.DB {
+	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		log.Fatalf("Failed to open database: %v", err)
+	}
+
+	// === Create the metrics table based on Metrics type defined if it doesn't exist ===
+	createMetricsTable := `
+	CREATE TABLE IF NOT EXISTS metrics (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		metric_name TEXT NOT NULL,
+		unit TEXT,
+		resource_attributes TEXT,
+		scope TEXT,
+		aggregation_temporality TEXT,
+		is_monotonic BOOLEAN,
+		start_time_unix_nano TEXT,
+		time_unix_nano TEXT NOT NULL,
+		value REAL,
+		data_point_attributes TEXT 
+	);`
+
+	if _, err := db.Exec(createMetricsTable); err != nil {
+		log.Fatalf("Failed to create metrics table: %v", err)
 	}
 
 	return db

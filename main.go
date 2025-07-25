@@ -4,16 +4,19 @@ import (
 	"log"
 	"telemetry-ingestor/db"
 	"telemetry-ingestor/logs"
+	"telemetry-ingestor/metrics"
 	"telemetry-ingestor/traces"
 )
 
 // Placeholder filepaths for demonstration
 var logFilePath = "files/reference/logs-empty.jsonl"
 var traceFilePath = "files/reference/traces-empty.jsonl"
+var metricsFilePath = "files/reference/metrics-empty.jsonl"
 
 func main() {
 	logsSetup()
 	tracesSetup()
+	metricsSetup()
 }
 
 func logsSetup() {
@@ -52,4 +55,23 @@ func tracesSetup() {
 		log.Fatal("Failed to write trace records to database: ", err)
 	}
 	log.Print("Successfully wrote trace records to database")
+}
+
+func metricsSetup() {
+	// Parse metrics file
+	metricsRecords, err := metrics.ParseMetricsFile(metricsFilePath)
+	if err != nil {
+		log.Fatal("Error parsing metrics file: ", err)
+	}
+	log.Print("Parsed Metrics Records: ", metricsRecords)
+
+	// Setup metrics database
+	dbMetrics := db.InitializeMetricsDatabase("metrics.db")
+	defer dbMetrics.Close()
+
+	// Write metrics records to database
+	if err := metrics.WriteMetricsRecordsToDB(dbMetrics, metricsRecords); err != nil {
+		log.Fatal("Failed to write metrics records to database: ", err)
+	}
+	log.Print("Successfully wrote metrics records to database")
 }
