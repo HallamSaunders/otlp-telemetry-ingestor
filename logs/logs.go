@@ -13,7 +13,7 @@ type LogFile struct {
 }
 
 type LogRecord struct {
-	TimeUnixNano           int64       `json:"timeUnixNano"`
+	TimeUnixNano           string      `json:"timeUnixNano"`
 	SeverityNumber         int         `json:"severityNumber"`
 	SeverityText           string      `json:"severityText"`
 	Body                   ValueField  `json:"body"`
