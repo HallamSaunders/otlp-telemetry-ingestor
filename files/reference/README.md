@@ -1,0 +1,1 @@
+The `.jsonl` files within this directory do not contain sensitive data and are not confidential. They are generic example files sourced from the [OpenTelemetry Protocol File Exporter documentation](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/file-exporter.md).
