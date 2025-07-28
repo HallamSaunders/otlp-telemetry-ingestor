@@ -9,9 +9,13 @@ import (
 )
 
 // Placeholder filepaths for demonstration
-var logFilePath = "files/reference/logs-empty.jsonl"
-var traceFilePath = "files/reference/traces-empty.jsonl"
-var metricsFilePath = "files/reference/metrics-empty.jsonl"
+//var logFilePath = "files/reference/logs-empty.jsonl"
+//var traceFilePath = "files/reference/traces-empty.jsonl"
+//var metricsFilePath = "files/reference/metrics-empty.jsonl"
+
+var logFilePath = "files/test/logs.jsonl"
+var traceFilePath = "files/test/traces.jsonl"
+var metricsFilePath = "files/test/metrics.jsonl"
 
 func main() {
 	logsSetup()

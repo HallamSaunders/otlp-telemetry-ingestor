@@ -2,7 +2,7 @@ package traces
 
 import (
 	"database/sql"
-	"encoding/json"
+	"strconv"
 )
 
 func WriteTraceRecordsToDB(db *sql.DB, records []ResourceSpan) error {
@@ -12,15 +12,14 @@ func WriteTraceRecordsToDB(db *sql.DB, records []ResourceSpan) error {
 	}
 	stmt, err := writer.Prepare(`
 		INSERT INTO traces (
-			start_time_unix_nano,
-			end_time_unix_nano,
-			name,
-			span_id,
-			trace_id,
-			parent_span_id,
-			attributes,
-			dropped_attributes_count)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			spanID,
+			parentSpanID,
+			traceID,
+			startTime,
+			duration,
+			serviceName,
+			operationName)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`)
 	if err != nil {
 		return err
@@ -29,20 +28,29 @@ func WriteTraceRecordsToDB(db *sql.DB, records []ResourceSpan) error {
 
 	for _, resourceSpan := range records {
 		// Serialize resource-level attributes
-		resourceAttrsJSON, _ := json.Marshal(resourceSpan.Resource.Attributes)
-
 		for _, scopeSpan := range resourceSpan.ScopeSpans {
 			for _, span := range scopeSpan.Spans {
-				// You could also include span-specific attributes if added later
-				_, err := stmt.Exec(
-					span.StartTimeUnixNano,
-					span.EndTimeUnixNano,
-					span.Name,
+				// Find duration in nanoseconds
+				startTime, err := strconv.ParseInt(span.StartTimeUnixNano, 10, 64)
+				if err != nil {
+					return err
+				}
+				endTime, err := strconv.ParseInt(span.EndTimeUnixNano, 10, 64)
+				if err != nil {
+					return err
+				}
+				duration := endTime - startTime
+				startTimeMilli := startTime / 1_000_000
+				durationMilli := duration / 1_000_000
+
+				_, err = stmt.Exec(
 					span.SpanID,
-					span.TraceID,
 					span.ParentSpanID,
-					string(resourceAttrsJSON),
-					span.DroppedAttributesCount,
+					span.TraceID,
+					startTimeMilli,
+					durationMilli,
+					span.Name,
+					span.Name,
 				)
 				if err != nil {
 					return err

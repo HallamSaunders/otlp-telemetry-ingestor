@@ -53,17 +53,30 @@ func InitializeTracesDatabase(path string) *sql.DB {
 
 	// === Create the traces table based on Traces type defined if it doesn't exist ===
 	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
+	//createTracesTable := `
+	//CREATE TABLE IF NOT EXISTS traces (
+	//	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	//	start_time_unix_nano TEXT NOT NULL,
+	//	end_time_unix_nano TEXT NOT NULL,
+	//	name TEXT NOT NULL,
+	//	span_id TEXT NOT NULL,
+	//	trace_id TEXT NOT NULL,
+	//	parent_span_id TEXT,
+	//	attributes TEXT,
+	//	dropped_attributes_count INTEGER DEFAULT 0
+	//);`
+
+	// Table based on Grafana's expected structure
 	createTracesTable := `
 	CREATE TABLE IF NOT EXISTS traces (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		start_time_unix_nano TEXT NOT NULL,
-		end_time_unix_nano TEXT NOT NULL,
-		name TEXT NOT NULL,
-		span_id TEXT NOT NULL,
-		trace_id TEXT NOT NULL,
-		parent_span_id TEXT,
-		attributes TEXT,
-		dropped_attributes_count INTEGER DEFAULT 0
+		spanID TEXT NOT NULL,
+		parentSpanID TEXT,
+		traceID TEXT NOT NULL,
+		startTime TEXT NOT NULL,
+		duration TEXT NOT NULL,
+		serviceName TEXT,
+		operationName TEXT NOT NULL
 	);`
 
 	if _, err := db.Exec(createTracesTable); err != nil {
