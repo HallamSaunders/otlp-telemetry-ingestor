@@ -28,10 +28,23 @@ func InitializeLogsDatabase(path string) *sql.DB {
 
 	// === Create the logs table based on Logs type defined if it doesn't exist ===
 	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
+	//createLogsTable := `
+	//CREATE TABLE IF NOT EXISTS logs (
+	//	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	//	time_unix_nano TEXT NOT NULL,
+	//	severity_number INTEGER NOT NULL,
+	//	severity_text TEXT NOT NULL,
+	//	body TEXT NOT NULL,
+	//	attributes TEXT,
+	//	dropped_attributes_count INTEGER DEFAULT 0,
+	//	trace_id TEXT,
+	//	span_id TEXT
+	//);`
+
 	createLogsTable := `
 	CREATE TABLE IF NOT EXISTS logs (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		time_unix_nano TEXT NOT NULL,
+		timestamp TEXT NOT NULL,
 		severity_number INTEGER NOT NULL,
 		severity_text TEXT NOT NULL,
 		body TEXT NOT NULL,

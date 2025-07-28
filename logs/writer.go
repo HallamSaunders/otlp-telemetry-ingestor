@@ -3,6 +3,8 @@ package logs
 import (
 	"database/sql"
 	"encoding/json"
+	"strconv"
+	"time"
 )
 
 func WriteLogRecordsToDB(db *sql.DB, records []LogRecord) error {
@@ -12,7 +14,7 @@ func WriteLogRecordsToDB(db *sql.DB, records []LogRecord) error {
 	}
 	stmt, err := writer.Prepare(`
 		INSERT INTO logs (
-			time_unix_nano,
+			timestamp,
 			severity_number,
 			severity_text,
 			body,
@@ -31,8 +33,15 @@ func WriteLogRecordsToDB(db *sql.DB, records []LogRecord) error {
 	for _, rec := range records {
 		attrsJSON, _ := json.Marshal(rec.Attributes) // Needs an update to handle different types of attribute
 
-		_, err := stmt.Exec(
-			rec.TimeUnixNano,
+		// Get time as timestamp for ease of viewing
+		unixNano, err := strconv.ParseInt(rec.TimeUnixNano, 10, 64)
+		if err != nil {
+			return err
+		}
+		timestamp := time.Unix(0, unixNano).Format(time.RFC3339Nano)
+
+		_, err = stmt.Exec(
+			timestamp,
 			rec.SeverityNumber,
 			rec.SeverityText,
 			rec.Body.StringValue,
