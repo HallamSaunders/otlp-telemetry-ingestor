@@ -23,24 +23,12 @@ func OverwriteCurrentDBFile(path string) *sql.DB {
 	return db
 }
 
+// NOTE: Tables are based on what I can glean of Grafana's expected structure.
+
 func InitializeLogsDatabase(path string) *sql.DB {
 	db := OverwriteCurrentDBFile(path)
 
 	// === Create the logs table based on Logs type defined if it doesn't exist ===
-	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
-	//createLogsTable := `
-	//CREATE TABLE IF NOT EXISTS logs (
-	//	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	//	time_unix_nano TEXT NOT NULL,
-	//	severity_number INTEGER NOT NULL,
-	//	severity_text TEXT NOT NULL,
-	//	body TEXT NOT NULL,
-	//	attributes TEXT,
-	//	dropped_attributes_count INTEGER DEFAULT 0,
-	//	trace_id TEXT,
-	//	span_id TEXT
-	//);`
-
 	createLogsTable := `
 	CREATE TABLE IF NOT EXISTS logs (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,21 +53,6 @@ func InitializeTracesDatabase(path string) *sql.DB {
 	db := OverwriteCurrentDBFile(path)
 
 	// === Create the traces table based on Traces type defined if it doesn't exist ===
-	// TODO: update Body field to match ValueField, Attributes to match []Attribute type
-	//createTracesTable := `
-	//CREATE TABLE IF NOT EXISTS traces (
-	//	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	//	start_time_unix_nano TEXT NOT NULL,
-	//	end_time_unix_nano TEXT NOT NULL,
-	//	name TEXT NOT NULL,
-	//	span_id TEXT NOT NULL,
-	//	trace_id TEXT NOT NULL,
-	//	parent_span_id TEXT,
-	//	attributes TEXT,
-	//	dropped_attributes_count INTEGER DEFAULT 0
-	//);`
-
-	// Table based on Grafana's expected structure
 	createTracesTable := `
 	CREATE TABLE IF NOT EXISTS traces (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
