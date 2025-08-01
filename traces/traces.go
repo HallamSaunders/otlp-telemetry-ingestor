@@ -15,7 +15,7 @@ type Resource struct {
 }
 
 type ScopeSpan struct {
-	Scope Scope  `json:"scope"` // Can remain empty, or define fields as needed
+	Scope Scope  `json:"scope"`
 	Spans []Span `json:"spans"`
 }
 
